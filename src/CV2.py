@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import time
 class LIVE_CAMERA_STERAM:
-    def __init__(self,channel):
+    def __init__(self,channel=int):
         self.channel = channel
         self.cam_url = f"rtsp://admin:aarush252011%21@192.168.1.98:554/Streaming/Channels/{self.channel}02"
         self.cam_whole = [
@@ -15,7 +15,10 @@ class LIVE_CAMERA_STERAM:
     def main_steram(self):
         cam = cv2.VideoCapture(self.cam_url)
         while True:
-            rat, fream = cam.read()
+            ret, fream = cam.read()
+            if not ret or fream is None:
+                print('OOPS!')
+                break
             resizing = cv2.resize(fream,(0,0),fx=2,fy=1.5)
             video_states = cv2.putText(resizing,'LIVE:',(20,80),cv2.FONT_HERSHEY_SIMPLEX,1.5,(0,0,255),3,cv2.LINE_AA)
             cv2.imshow('CCTV CAMERA',video_states)
@@ -23,6 +26,7 @@ class LIVE_CAMERA_STERAM:
                 break
         cam.release()
         cv2.destroyAllWindows()
+
     # IT SHOWS ALL THE MAIN STERMS TOGATHERE
     def main_steram_as_whole(self):
         # IT gets all the urls
@@ -31,18 +35,24 @@ class LIVE_CAMERA_STERAM:
             #place holder for fianlley product
             finall = []
             #A FOR LOOP WHICH MAKING AND TRANSFORMS EACH AND EVERY FOOAGE
-
-            for i, cctv in enumerate(cam):
-                rat, fream = cctv.read()
-                resizing = cv2.resize(fream,(0,0),fx=1,fy=0.5)
-                video_status = self.cam_whole[i]['label']
-                cv2.putText(resizing,video_status,(20,80),cv2.FONT_HERSHEY_SIMPLEX,1.5,(0,0,255),3,cv2.LINE_AA)
-                finall.append(resizing)
-            #COMBINS THOSE VIDEOS INTO A BIG ONE
-            top_videos = np.hstack((finall[0],finall[1]))
-            bottom_videos = np.hstack((finall[2],finall[3]))
-            whole_videos = np.vstack((top_videos,bottom_videos))
-            cv2.imshow('all_camers',whole_videos)
+            try:
+                for i, cctv in enumerate(cam):
+                    ret, fream = cctv.read()
+                    if not ret:
+                        print('OOPS')
+                        raise Exception
+                    resizing = cv2.resize(fream,(0,0),fx=1,fy=0.5)
+                    video_status = self.cam_whole[i]['label']
+                    cv2.putText(resizing,video_status,(20,80),cv2.FONT_HERSHEY_SIMPLEX,1.5,(0,0,255),3,cv2.LINE_AA)
+                    finall.append(resizing)
+                if len(finall) == 4:
+                    #COMBINS THOSE VIDEOS INTO A BIG ONE
+                    top_videos = np.hstack((finall[0],finall[1]))
+                    bottom_videos = np.hstack((finall[2],finall[3]))
+                    whole_videos = np.vstack((top_videos,bottom_videos))
+                    cv2.imshow('all_camers',whole_videos)
+            except Exception:
+                pass
             if cv2.waitKey(1) == ord('a'):
                 break
         #A FOR LOOP TO RELEASE ALL FOOAGES
@@ -312,4 +322,3 @@ class RECORDED_STERM:
         if self.cam is not None:
             self.cam.release()
         cv2.destroyAllWindows()
-

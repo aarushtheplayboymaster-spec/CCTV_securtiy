@@ -1,1 +1,0 @@
-SO, HOMESERVALANScamar system is made for detecting unkonw peaple,selected peaple and making sure that mony spend on your home CCTV camare dosn't get's wasted    

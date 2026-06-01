@@ -3,6 +3,8 @@ import keyboard
 from datetime import datetime
 from src.CV2 import LIVE_CAMERA_STERAM
 from src.CV2 import RECORDED_STERM
+from src.dictecter import DITECTERS
+
 #one faction to start the program
 #it connects with live sterm
 def main():
@@ -20,12 +22,13 @@ def main_effacts():
     cam.main_sterm_effacts_controling()
 #it connects with recorded sterm
 def recorded_sterm():
+#it helps completing in the API and get the total time
     DATE_STR = input('ENTER YOUR DATE:- ')
     START_HOUR_STR = input('ENTER YOUR STARTING HOUR:- ')
     END_HOUR_STR = input('ENTER YOUR ENDING HOUR:- ')
     START_MIN_STR = input('ENTER YOUR STARTING MIN:- ')
     END_MIN_STR = input('ENTER YOUR ENDING MIN:- ')
-    channals = input('ENTER YOUR ENDING MIN:- ')
+    channals = input('ENTER YOUR VIEW CHANNAL:- ')
 
     RAW_START = f"{DATE_STR}T{START_HOUR_STR}{START_MIN_STR}00"
     RAW_END   = f"{DATE_STR}T{END_HOUR_STR}{ END_MIN_STR }00"
@@ -38,9 +41,6 @@ def recorded_sterm():
 
     print(f"--- Software Engine Initialized ---")
     print(f"Detected Stream Duration: {total_minutes} Minutes")
-
-    # 4. Construct a perfect, clean URL template with the placeholder built right in
-    # This guarantees Python can inject the scrubbed minutes directly without string collisions
     REPLACEABLE_URL= (
         f"rtsp://admin:aarush252011%21@192.168.1.98:554/Streaming/Tracks/{channals}01?"
         f"starttime={DATE_STR}T{START_HOUR_STR}{{:02d}}00Z&"
@@ -48,9 +48,21 @@ def recorded_sterm():
     )
     cam = RECORDED_STERM(REPLACEABLE_URL,total_minutes,START_HOUR_STR)
     cam.recorded_sterm()
+
+#it get you the coodenats of your zone
+def camera_dictechter_coon():
+    cam = DITECTERS(coondenats_of_the_zone=None)
+    cam.get_coon()
+#it dictecs who has crrosed the zone and gets there data and sends alarm
+def camera_dictechter():
+    cam = DITECTERS(coondenats_of_the_zone=None)
+    cam.ditec()
 if __name__ == '__main__':
     keyboard.add_hotkey('shift+L',main)
     keyboard.add_hotkey('shift+W',whole_sterm)
     keyboard.add_hotkey('shift+C',main_effacts)
     keyboard.add_hotkey('shift+R',recorded_sterm)
+    keyboard.add_hotkey('shift+U',camera_dictechter_coon)
+    keyboard.add_hotkey('shift+D',camera_dictechter)
+
     keyboard.wait('a')
